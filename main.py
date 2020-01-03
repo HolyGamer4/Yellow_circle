@@ -1,16 +1,18 @@
 import sys
 import random
-from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QApplication
-from PyQt5.QtGui import QPainter, QBrush, QPen
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+import UI
 
 
-class Main(QMainWindow):
+class Main(QMainWindow, UI.Ui_MainWindow):
     def __init__(self):
         self.flag = False
+        self.colours = [QColor(255, 0, 0), QColor(0, 255, 0), QColor(0, 0, 255),
+                        QColor(0, 255, 255), QColor(255, 0, 255)]
         super().__init__()
-        uic.loadUi('UI.ui', self)
+        self.setupUi(self)
 
         self.pushButton.clicked.connect(self.on_click)
 
@@ -21,14 +23,20 @@ class Main(QMainWindow):
     def paintEvent(self, event):
         if self.flag:
             painter = QPainter(self)
-            painter.setPen(QPen(Qt.yellow, 8, Qt.SolidLine))
-            painter.setBrush(QBrush(Qt.yellow, Qt.SolidPattern))
-            for i in range(random.randint(1, 15)):
-                x = random.randint(1, 800)
-                y = random.randint(1, 600)
-                a = random.randint(1, 100)
-                painter.drawEllipse(x, y, a, a)
+            painter.begin(self)
+            self.curc(painter)
+            painter.end()
             self.flag = False
+
+    def curc(self, painter):
+        for i in range(random.randint(1, 15)):
+            self.col = random.choice(self.colours)
+            painter.setBrush(self.col)
+            painter.setPen(self.col)
+            x = random.randint(1, 800)
+            y = random.randint(1, 600)
+            a = random.randint(1, 100)
+            painter.drawEllipse(x, y, a, a)
 
 
 if __name__ == '__main__':
